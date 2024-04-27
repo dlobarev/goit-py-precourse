@@ -1,0 +1,25 @@
+class RandomGenerator:
+    def __init__(self, initial_state):
+        if (initial_state < 0) or (initial_state > 255):
+            raise Exception("Initial state must be integer in range [0; 255]")
+        
+        self.state = initial_state
+    
+    def get_rand(self):
+        self.state = (self.state * 37 + 73) % 256
+        return  self.state
+try:
+    generator = RandomGenerator(97)
+except:
+    print('Exception')
+
+with open("secret.txt") as secret:
+        file_content = secret.read()
+        secret_length = len(file_content)
+
+with open("secret.txt", 'wb+') as secret:
+        for i in range(10):
+            mask = generator.get_rand().to_bytes(1, 'big', signed=False)  # переведення в байти
+            secret.seek(0)
+            for j in range(0, secret_length):
+                secret.write(mask)
